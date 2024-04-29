@@ -52,53 +52,6 @@ class ChangeDotEnvTemplateFileTest {
     }
 
     @Test
-    fun throwsIfChangedFileNotFound() {
-        RootProject(projectDir) {
-            settingsGradle()
-            buildGradle(
-                """
-                plugins {
-                    base
-                    id("co.uzzu.dotenv.gradle")
-                }
-                println("Result: ${'$'}{env.HOGE.value}")
-                """.trimIndent()
-            )
-            file(
-                ".env.example",
-                """
-                HOGE=100
-                """.trimIndent()
-            )
-            file(
-                "gradle.properties",
-                """
-                dotenv.template.filename=.env.exampururu
-                """.trimIndent()
-            )
-        }
-
-        val runner = GradleRunner.create()
-            .withPluginClasspath()
-            .withProjectDir(projectDir)
-
-        var error: UnexpectedBuildFailure? = null
-        try {
-            runner.build()
-        } catch (e: UnexpectedBuildFailure) {
-            error = e
-        }
-        assertThat(error)
-            .isNotNull()
-            .messageContains(
-                buildString {
-                    append("Could not read the dotenv template file specified in the gradle.properties.")
-                    append(" dotenv.template.filename: .env.exampururu")
-                }
-            )
-    }
-
-    @Test
     fun changeFileOnlySubProject() {
         RootProject(projectDir) {
             settingsGradle(

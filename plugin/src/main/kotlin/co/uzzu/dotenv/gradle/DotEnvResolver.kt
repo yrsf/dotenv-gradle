@@ -2,8 +2,8 @@ package co.uzzu.dotenv.gradle
 
 import co.uzzu.dotenv.DotEnvParser
 import org.gradle.api.Project
-import java.io.IOException
 import java.nio.charset.Charset
+import java.util.Collections
 
 internal class DotEnvResolver(project: Project) {
 
@@ -54,13 +54,7 @@ internal class DotEnvResolver(project: Project) {
                 if (it != DefaultConfiguration.templateFilename) {
                     val templateFile = file(it)
                     if (!templateFile.exists() || !templateFile.canRead()) {
-                        throw IOException(
-                            buildString {
-                                append("Could not read the dotenv template file specified in the gradle.properties.")
-                                append(" ${ConfigurationKey.TemplateFilename}: $it,")
-                                append(" path: ${templateFile.absolutePath}")
-                            }
-                        )
+                        return Collections.emptyMap()
                     }
                 }
                 it
@@ -74,13 +68,7 @@ internal class DotEnvResolver(project: Project) {
                 if (it != DefaultConfiguration.filename) {
                     val envFile = file(it)
                     if (!envFile.exists() || !envFile.canRead()) {
-                        throw IOException(
-                            buildString {
-                                append("Could not read the dotenv file specified in the gradle.properties.")
-                                append(" ${ConfigurationKey.Filename}: $it,")
-                                append(" path: ${envFile.absolutePath}")
-                            }
-                        )
+                        return Collections.emptyMap()
                     }
                 }
                 it
